@@ -1,0 +1,66 @@
+<script setup lang="ts">
+import CartItem from "./CartItem.vue";
+import Button from "../Button.vue";
+import Checkout from "./Checkout.vue";
+import { useCartStore } from "../../store/useCartStore";
+
+const { cartData, updateCartQuantity, removeFromCartData, totalPrice } = useCartStore();
+
+
+
+const checkoutData = [
+  { description: "Subtotal", price: totalPrice },
+  { description: "Shipping", price: 40 },
+  { description: "Tax", price: 80 },
+];
+
+
+console.log(cartData, "CART DATA")
+</script>
+
+<template>
+  <div class="cart">
+    <div class="cart-action">
+      <h2>Shopping <span class="cart-action-label">Bag</span></h2>
+      <slot></slot>
+    </div>
+
+    <div class="cart-items hide-scroll-bar" v-if="!!cartData.length">
+      <CartItem
+        v-for="books in cartData"
+        :name="books?.Title"
+        :publisher="books?.Publisher"
+        :id="books?.id"
+        :key="books?.id"
+        :price="books?.price! * books?.quantity!"
+        :quantity="books?.quantity!"
+        @updateQuantity="updateCartQuantity(books.id, books.quantity!)"
+        @removeFromCart="removeFromCartData(books.id)"
+      />
+    </div>
+
+    <div class="cart-total" v-if="!!cartData.length">
+      <div class="cart-checkout">
+        <Checkout
+          v-for="checkout in checkoutData"
+          :description="checkout?.description"
+          :price="checkout?.price"
+          :key="checkout?.description"
+        />
+
+        <div class="cart-checkout-total">
+          <span>Order total</span>
+          <span>${{totalPrice + 40 + 80 }}.00</span>
+        </div>
+      </div>
+
+      <div class="cart-button">
+        <Button size="medium" variant="primary"> Checkout </Button>
+      </div>
+    </div>
+
+
+      <p v-else="!cartData?.length" class="cart-empty">Shopping <span>Bag</span> is empty!</p>
+
+  </div>
+</template>

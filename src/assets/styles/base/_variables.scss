@@ -1,0 +1,33 @@
+/* Primary colors */
+$primary-color: #7771f4;
+$primary-light: #4f45e4;
+$primary-dark: #2c3e50;
+
+/* Secondary colors */
+$success-color: #2ecc71;
+$success-light: #f1fefa;
+$success-dark: #27ae60;
+
+/* Neutral colors */
+$white: #ffffff;
+$black: #000000;
+$gray-light: #f0edf1;
+$gray-neutral: #f9fafb;
+$gray-dark: #95a5a6;
+
+//Box Shadow
+$tw-ring-offset-shadow: 0 0 $gray-dark;
+$tw-ring-shadow: 0 0 $gray-dark;
+$tw-shadow: 0 10px 15px -3px $gray-dark, 0 4px 6px -4px;
+
+//Breakpoint
+$breakpoint-small: 480px;
+$breakpoint-medium: 768px;
+$breakpoint-large: 1024px;
+$breakpoint-xlarge: 1200px;
+
+//Animations
+$skeleton-background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+$skeleton-animation-duration: 1.5s;
+$pulse-duration: 1.5s;
+$pulse-timing: ease-in-out;
