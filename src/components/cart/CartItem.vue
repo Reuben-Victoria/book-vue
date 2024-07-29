@@ -8,9 +8,7 @@ const emit = defineEmits(["updateQuantity", "removeFromCart"]);
 
 const handleQuantityChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
-
   let newValue = Number(target.value);
-
   if (newValue < 1) {
     newValue = 1;
     target.value = newValue.toString();
