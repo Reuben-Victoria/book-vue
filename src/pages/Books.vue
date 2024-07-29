@@ -29,7 +29,7 @@ onMounted(() => {
     </div>
     <div class="books-content">
       <div
-        v-if="cartStore.isPending && !(!paginateBooks?.length! || !searchBooks?.length!)"
+        v-if="cartStore.isPending"
         class="books-content-main"
       >
         <BookCardSkeleton
