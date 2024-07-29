@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { Icon } from "@iconify/vue/dist/iconify.js";
 import { useRoute } from "vue-router";
 import ViewBookSkeleton from "../components/loaders/ViewBookSkeleton.vue";
@@ -11,22 +11,21 @@ const route = useRoute();
 
 const id = route.params.id;
 
-const {
-  viewBook: data,
-  getBookById,
-  addToCart,
-  isFetching: isPending,
-} = useCartStore();
+const cartStore = useCartStore();
 
-console.log(isPending, "ISPENDING");
+const data = computed(() => cartStore.viewBook);
 
-onMounted(async () => {
-  await getBookById(id! as string);
+const handleAddToCart = () => {
+  cartStore.addToCart(data.value);
+};
+
+onMounted( () => {
+  cartStore.getBookById(id! as string);
 });
 </script>
 
 <template>
-  <ViewBookSkeleton v-if="!!isPending" />
+  <ViewBookSkeleton v-if="!!cartStore.isFetching" />
 
   <div v-else class="view">
     <div class="view-info">
@@ -74,7 +73,11 @@ onMounted(async () => {
         </div>
       </div>
 
-      <Button variant="primary" size="medium" :onclick="addToCart(data!)">
+      <Button
+        variant="primary"
+        size="medium"
+        @click="handleAddToCart"
+      >
         Add to bag
       </Button>
       <div class="view-guarantee">

@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import { Icon } from "@iconify/vue";
+import { useCartStore } from "../store/useCartStore";
+import { RouterLink } from "vue-router";
+import Cart from "./cart/Cart.vue";
+import "../assets/styles/components/_navbar.scss";
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  PopoverOverlay,
+} from "@headlessui/vue";
+import { computed } from "vue";
+
+const cartStore = useCartStore();
+
+const totalItemsInBag = computed(() => cartStore.totalItemsInBag);
+</script>
+
 <template>
   <nav class="navbar">
     <RouterLink to="/" class="navbar-logo">
@@ -7,12 +26,13 @@
 
     <ul class="navbar-list">
       <li>
-        <Popover v-slot="{ open }" class="relative">
-          <PopoverButton as="div" class="navbar-list-cart">
+        <Popover class="relative">
+          <PopoverButton  class="navbar-list-cart">
             <Icon icon="ph:handbag-fill" class="navbar-list-cart-icon" />
             <span>{{ totalItemsInBag }}</span>
           </PopoverButton>
-          <div class="cart-overlay" v-if="open"></div>
+
+          <PopoverOverlay class="cart-overlay" />
           <transition
             leave="transition ease-in duration-200"
             leaveFrom="opacity-100 translate-y-0"
@@ -48,16 +68,3 @@
     </ul>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { useCartStore } from "../store/useCartStore";
-import { RouterLink } from "vue-router";
-import Cart from "./cart/Cart.vue";
-import "../assets/styles/components/_navbar.scss";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
-
-const { totalItemsInBag } = useCartStore();
-
-console.log(totalItemsInBag);
-</script>

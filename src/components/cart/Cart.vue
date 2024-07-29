@@ -3,19 +3,19 @@ import CartItem from "./CartItem.vue";
 import Button from "../Button.vue";
 import Checkout from "./Checkout.vue";
 import { useCartStore } from "../../store/useCartStore";
+import { computed } from "vue";
 
-const { cartData, updateCartQuantity, removeFromCartData, totalPrice } = useCartStore();
+const cartStore = useCartStore();
 
+const cartData = cartStore.cartData;
 
+const totalPrice = computed(() => cartStore.totalPrice);
 
 const checkoutData = [
-  { description: "Subtotal", price: totalPrice },
+  { description: "Subtotal", price: totalPrice.value },
   { description: "Shipping", price: 40 },
   { description: "Tax", price: 80 },
 ];
-
-
-console.log(cartData, "CART DATA")
 </script>
 
 <template>
@@ -34,8 +34,10 @@ console.log(cartData, "CART DATA")
         :key="books?.id"
         :price="books?.price! * books?.quantity!"
         :quantity="books?.quantity!"
-        @updateQuantity="updateCartQuantity(books.id, books.quantity!)"
-        @removeFromCart="removeFromCartData(books.id)"
+        @updateQuantity="
+          cartStore.updateCartQuantity(books.id, books.quantity!)
+        "
+        @removeFromCart="cartStore.removeFromCartData(books.id)"
       />
     </div>
 
@@ -50,7 +52,7 @@ console.log(cartData, "CART DATA")
 
         <div class="cart-checkout-total">
           <span>Order total</span>
-          <span>${{totalPrice + 40 + 80 }}.00</span>
+          <span>${{ totalPrice + 40 + 80 }}.00</span>
         </div>
       </div>
 
@@ -59,8 +61,8 @@ console.log(cartData, "CART DATA")
       </div>
     </div>
 
-
-      <p v-else="!cartData?.length" class="cart-empty">Shopping <span>Bag</span> is empty!</p>
-
+    <p v-else="!cartData?.length" class="cart-empty">
+      Shopping <span>Bag</span> is empty!
+    </p>
   </div>
 </template>

@@ -1,47 +1,44 @@
 <script setup lang="ts">
+import { useCartStore } from "../store/useCartStore";
+import { ref, computed } from "vue";
 import { Icon } from "@iconify/vue/dist/iconify.js";
 import Button from "./Button.vue";
-import { defineProps } from "vue";
 
-type Props = {
-  /**
-   * current page
-   */
-  page: number;
-  total_pages: number;
-  /**
-   * meta
-   * @default - { page: 1 }
-   */
-  /**
-   * on page change
-   * @param page
-   * @default 1
-   */
-  //   setLimit: (limit: number) => void;
-  //   onPageChange: (page: number) => void;
+const cartStore = useCartStore();
+
+const limits = ref([10, 25, 50, 100]);
+
+const page = computed(() => cartStore.query.page);
+const totalPages = computed(() => cartStore.totalPages);
+
+const handleLimitChange = (event: Event) => {
+  const target = event.target as HTMLSelectElement;
+  cartStore.updateQuery({ page: 1, limit: Number(target.value) });
 };
 
-defineProps<Props>();
+const changePage = (newPage: number) => {
+  if (newPage > 0 && newPage <= totalPages.value) {
+    cartStore.updateQuery({ page: newPage });
 
-defineEmits(["onPageChange"]);
-const pages = [10, 25, 50, 100];
+    console.log(page, "PAGE");
+  }
+};
 </script>
 
 <template>
   <div class="pagination">
     <div class="pagination-rows">
       <p class="pagination-text">Items per page</p>
-      <select data-testid="pagination-limit" class="pagination-select">
-        <option v-for="page in pages" key="{page}" :value="page">
-          {{ page }}
+      <select @change="handleLimitChange" class="pagination-select">
+        <option v-for="limit in limits" :value="limit" :key="limit">
+          {{ limit }}
         </option>
       </select>
     </div>
     <div class="pagination-buttons">
       <p class="pagination-page-info">
         Page {{ `${page}` }} of
-        {{ isNaN(total_pages) ? 0 : total_pages }}
+        {{ isNaN(totalPages) ? 0 : totalPages }}
       </p>
       <Button
         class="pagination-button"
@@ -50,7 +47,7 @@ const pages = [10, 25, 50, 100];
         variant="outlined"
         size="small"
         :disabled="page === 1"
-        @click="$emit('onPageChange', page - 1)"
+        @click="changePage(page - 1)"
       >
         <Icon icon="ph:caret-left" fontSize="16" />
       </Button>
@@ -58,9 +55,9 @@ const pages = [10, 25, 50, 100];
         class="pagination-button"
         type="button"
         size="small"
-        :disabled="total_pages === page"
+        :disabled="totalPages === page"
         variant="primary"
-        @click="$emit('onPageChange', page + 1)"
+        @click="changePage(page + 1)"
       >
         <Icon icon="ph:caret-right" fontSize="16" />
       </Button>

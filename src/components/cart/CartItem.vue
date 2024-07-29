@@ -7,7 +7,6 @@ const emit = defineEmits(["updateQuantity", "removeFromCart"]);
 
 const handleQuantityChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  console.log(target.value, "TARGET");
   emit("updateQuantity", { id: props.id, quantity: Number(target.value) });
 };
 </script>

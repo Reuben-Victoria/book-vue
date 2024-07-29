@@ -53,7 +53,7 @@
 
     p {
       font-size: rem(16);
-    
+
       font-weight: 500;
       margin: 0;
       word-wrap: break-word;
@@ -89,12 +89,12 @@
 
     input {
       @include cartitem-select;
-      max-width: rem(68) !important;
+      max-width: rem(64) !important;
     }
 
     button {
       @include cartitem-button;
-      text-align: center;
+      text-align: left;
     }
   }
 
@@ -122,6 +122,7 @@
   &-price {
     color: $primary-dark;
     font-size: rem(14);
+    -webkit-line-clamp: 1;
     font-weight: 500;
     margin: 0;
   }

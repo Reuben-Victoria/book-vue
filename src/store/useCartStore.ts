@@ -27,12 +27,12 @@ export const useCartStore = defineStore("cart", {
         0
       );
     },
-    totalItemsInBag : (state) => {
-        return state.cartData?.reduce(
-          (accum, item) => accum + (item?.quantity! ?? 0),
-          0
-        );
-      },
+    totalItemsInBag: (state) => {
+      return state.cartData?.reduce(
+        (accum, item) => accum + (item?.quantity! ?? 0),
+        0
+      );
+    },
     totalPages: (state) => {
       return Math.ceil(state.allSearchBooks?.length! / state.query.limit);
     },
@@ -49,6 +49,9 @@ export const useCartStore = defineStore("cart", {
       const pageSize = state.query.limit;
       const startIndex = (state.query.page - 1) * pageSize;
       const endIndex = state.query.page * pageSize;
+      console.log("Start Index:", startIndex);
+      console.log("End Index:", endIndex);
+      console.log("All Search Books Length:", state.allSearchBooks.length);
       return state.allSearchBooks.slice(startIndex, endIndex);
     },
   },
@@ -65,6 +68,13 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await getbooks(this.query);
         this.data = response.data;
+        this.allSearchBooks = this.query.search
+          ? response.data.filter((book: BookType) =>
+              book?.Title?.toLowerCase().includes(
+                this.query.search.toLowerCase()
+              )
+            )
+          : response.data;
         this.isPending = false;
       } catch (error) {
         console.error("Error", error);
@@ -90,22 +100,20 @@ export const useCartStore = defineStore("cart", {
       return this.cartData = this.cartData.filter((item) => item.id !== id);
     },
     updateCartQuantity(id: number, quantity: number) {
-      return this.cartData = this.cartData.map((item) =>
+      return (this.cartData = this.cartData.map((item) =>
         item.id === id ? { ...item, quantity } : item
-      );
+      ));
     },
     addToCart(item: BookWithQuantityType) {
       const existingItem = this.cartData.find((book) => book.id === item.id);
-      if (existingItem) {
-        return this.cartData.map((book) =>
+      if (existingItem)
+        return this.cartData = this.cartData.map((book) =>
           book.id === item.id
             ? { ...book, quantity: book.quantity! + 1, price: 50 }
             : book
         );
-      }
+
       return this.cartData.push({ ...item, quantity: 1, price: 50 });
     },
   },
-
-
 });
