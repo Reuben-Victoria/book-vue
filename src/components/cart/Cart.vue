@@ -7,19 +7,19 @@ import { computed } from "vue";
 
 const cartStore = useCartStore();
 
-const cartData = cartStore.cartData;
+const cartData = computed(() => cartStore.cartData);
 
 const totalPrice = computed(() => cartStore.totalPrice);
+
+const handleUpdateQuantity = (id: number, quantity: number) => {
+  cartStore.updateCartQuantity(id, quantity);
+};
 
 const checkoutData = [
   { description: "Subtotal", price: totalPrice.value },
   { description: "Shipping", price: 40 },
   { description: "Tax", price: 80 },
 ];
-
-
-
-
 </script>
 
 <template>
@@ -38,9 +38,7 @@ const checkoutData = [
         :key="books?.id"
         :price="books?.price! * books?.quantity!"
         :quantity="books?.quantity!"
-        @updateQuantity="
-          cartStore.updateCartQuantity(books.id, books.quantity!)
-        "
+        @updateQuantity="handleUpdateQuantity(books.id, $event)"
         @removeFromCart="cartStore.removeFromCartData(books.id)"
       />
     </div>

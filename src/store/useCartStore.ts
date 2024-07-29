@@ -37,7 +37,7 @@ export const useCartStore = defineStore("cart", {
       return Math.ceil(state.allSearchBooks?.length! / state.query.limit);
     },
     searchBooks: (state) => {
-      return state.query.search
+      return state.query.search !== ""
         ? state.data?.filter((book: BookType) =>
             book?.Title?.toLowerCase().includes(
               state.query.search.toLowerCase()
@@ -49,9 +49,6 @@ export const useCartStore = defineStore("cart", {
       const pageSize = state.query.limit;
       const startIndex = (state.query.page - 1) * pageSize;
       const endIndex = state.query.page * pageSize;
-      console.log("Start Index:", startIndex);
-      console.log("End Index:", endIndex);
-      console.log("All Search Books Length:", state.allSearchBooks.length);
       return state.allSearchBooks.slice(startIndex, endIndex);
     },
   },
@@ -69,7 +66,7 @@ export const useCartStore = defineStore("cart", {
         const response = await getbooks(this.query);
         this.data = response.data;
         this.isPending = false;
-        this.allSearchBooks = this.query.search
+        this.allSearchBooks = this.query.search !== ""
           ? response.data.filter((book: BookType) =>
               book?.Title?.toLowerCase().includes(
                 this.query.search.toLowerCase()

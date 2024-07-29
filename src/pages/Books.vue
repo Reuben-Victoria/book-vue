@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import BookCard from "../components/BookCard.vue";
 import Pagination from "../components/Pagination.vue";
 import Search from "../components/Search.vue";
@@ -9,9 +9,10 @@ import { useCartStore } from "../store/useCartStore";
 const cartStore = useCartStore();
 
 const paginateBooks = computed(() => cartStore.paginateBooks);
+
 const searchBooks = computed(() => cartStore.searchBooks);
 
-console.log(cartStore.isPending, "PENDING");
+watch(() => cartStore.query.search, cartStore.getAllbooks, { immediate: true })
 
 onMounted(() => {
   cartStore.getAllbooks();
@@ -23,18 +24,15 @@ onMounted(() => {
       <h2>Books</h2>
       <Search
         class="books-search"
-        @onChange="cartStore.updateQuery({ search: cartStore.query.search })"
+        @onChange="cartStore.updateQuery({ search: $event })"
         :value="cartStore.query.search"
       />
     </div>
     <div class="books-content">
-      <div
-        v-if="cartStore.isPending"
-        class="books-content-main"
-      >
+      <div v-if="cartStore.isPending" class="books-content-main">
         <BookCardSkeleton
-          v-for="_ in Array.from({ length: 9 })"
-          key="{index}"
+          v-for="(_, index) in Array.from({ length: 9 })"
+          :key="index"
         />
       </div>
 
@@ -43,21 +41,18 @@ onMounted(() => {
         v-if="(!!paginateBooks?.length! || !!searchBooks?.length!) && !cartStore.isPending "
       >
         <BookCard
-          v-for="books in cartStore.query?.search ? searchBooks : paginateBooks"
+          v-for="books in paginateBooks"
           :key="books?.id"
           :books="books"
           @addToBag="cartStore.addToCart(books)"
         />
       </div>
-      <Pagination v-if="!!paginateBooks?.length! || !!searchBooks?.length!" />
+      <Pagination v-if="!!paginateBooks?.length! && !!searchBooks?.length!" />
 
       <div
-        v-if="
-        !paginateBooks?.length!
-        &&
-        !cartStore.isPending
-        &&
-        !searchBooks?.length"
+        v-if="  !paginateBooks?.length! &&
+    !searchBooks?.length &&
+    !cartStore.isPending"
       >
         <p class="books-not-found">No book <span>found!</span></p>
       </div>

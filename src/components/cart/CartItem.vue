@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CartItemProps } from "../../types/cart";
+import { formatAmount } from "../../utils";
 
 const props = defineProps<CartItemProps>();
 
@@ -7,7 +8,14 @@ const emit = defineEmits(["updateQuantity", "removeFromCart"]);
 
 const handleQuantityChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  emit("updateQuantity", { id: props.id, quantity: Number(target.value) });
+
+  let newValue = Number(target.value);
+
+  if (newValue < 1) {
+    newValue = 1;
+    target.value = newValue.toString();
+  }
+  emit("updateQuantity", (props.id, newValue));
 };
 </script>
 
@@ -28,7 +36,7 @@ const handleQuantityChange = (event: Event) => {
             type="number"
             name="id.toString()"
             :value="props.quantity"
-            v-on:input="handleQuantityChange"
+            @input="handleQuantityChange"
           />
 
           <button @click="$emit('removeFromCart')">Remove</button>
@@ -37,14 +45,14 @@ const handleQuantityChange = (event: Event) => {
     </div>
     <div class="cartitem-actions">
       <input
-        name="id.toString()"
+        :name="id.toString()"
         type="number"
         :value="props.quantity"
-        v-on:input="handleQuantityChange"
+        @input="handleQuantityChange"
       />
       <button @click="$emit('removeFromCart')">Remove</button>
     </div>
 
-    <p class="cartitem-price">${{ price }}.00</p>
+    <p class="cartitem-price">${{ formatAmount(price, 2) }}</p>
   </div>
 </template>

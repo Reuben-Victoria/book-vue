@@ -19,8 +19,6 @@ const handleLimitChange = (event: Event) => {
 const changePage = (newPage: number) => {
   if (newPage > 0 && newPage <= totalPages.value) {
     cartStore.updateQuery({ page: newPage });
-
-    console.log(page, "PAGE");
   }
 };
 </script>
