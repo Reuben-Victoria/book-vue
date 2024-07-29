@@ -3,7 +3,7 @@ import CartItem from "./CartItem.vue";
 import Button from "../Button.vue";
 import Checkout from "./Checkout.vue";
 import { useCartStore } from "../../store/useCartStore";
-import { computed, watch } from "vue";
+import { computed } from "vue";
 
 const cartStore = useCartStore();
 
@@ -17,9 +17,7 @@ const checkoutData = [
   { description: "Tax", price: 80 },
 ];
 
-const handleReset = () =>{
-   
-}
+
 
 
 </script>
