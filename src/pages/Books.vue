@@ -11,7 +11,7 @@ const cartStore = useCartStore();
 const paginateBooks = computed(() => cartStore.paginateBooks);
 const searchBooks = computed(() => cartStore.searchBooks);
 
-
+console.log(cartStore.isPending, "PENDING");
 
 onMounted(() => {
   cartStore.getAllbooks();
@@ -28,7 +28,10 @@ onMounted(() => {
       />
     </div>
     <div class="books-content">
-      <div v-if="cartStore.isPending" class="books-content-main">
+      <div
+        v-if="cartStore.isPending && !(!paginateBooks?.length! || !searchBooks?.length!)"
+        class="books-content-main"
+      >
         <BookCardSkeleton
           v-for="_ in Array.from({ length: 9 })"
           key="{index}"
@@ -37,7 +40,7 @@ onMounted(() => {
 
       <div
         class="books-content-main"
-        v-if="!!paginateBooks?.length! || !!searchBooks?.length!"
+        v-if="(!!paginateBooks?.length! || !!searchBooks?.length!) && !cartStore.isPending "
       >
         <BookCard
           v-for="books in cartStore.query?.search ? searchBooks : paginateBooks"
@@ -46,7 +49,7 @@ onMounted(() => {
           @addToBag="cartStore.addToCart(books)"
         />
       </div>
-      <Pagination     v-if="!!paginateBooks?.length! || !!searchBooks?.length!"/>
+      <Pagination v-if="!!paginateBooks?.length! || !!searchBooks?.length!" />
 
       <div
         v-if="

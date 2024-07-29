@@ -68,6 +68,7 @@ export const useCartStore = defineStore("cart", {
       try {
         const response = await getbooks(this.query);
         this.data = response.data;
+        this.isPending = false;
         this.allSearchBooks = this.query.search
           ? response.data.filter((book: BookType) =>
               book?.Title?.toLowerCase().includes(
@@ -75,7 +76,6 @@ export const useCartStore = defineStore("cart", {
               )
             )
           : response.data;
-        this.isPending = false;
       } catch (error) {
         console.error("Error", error);
       } finally {
@@ -87,8 +87,8 @@ export const useCartStore = defineStore("cart", {
       this.isFetching = true;
       try {
         const response = await getBookById(id);
-        this.viewBook = response.data;
         this.isFetching = false;
+        this.viewBook = response.data;
       } catch (error) {
         console.error("Error", error);
       } finally {
@@ -97,7 +97,7 @@ export const useCartStore = defineStore("cart", {
     },
 
     removeFromCartData(id: number) {
-      return this.cartData = this.cartData.filter((item) => item.id !== id);
+      return (this.cartData = this.cartData.filter((item) => item.id !== id));
     },
     updateCartQuantity(id: number, quantity: number) {
       return (this.cartData = this.cartData.map((item) =>
@@ -107,11 +107,11 @@ export const useCartStore = defineStore("cart", {
     addToCart(item: BookWithQuantityType) {
       const existingItem = this.cartData.find((book) => book.id === item.id);
       if (existingItem)
-        return this.cartData = this.cartData.map((book) =>
+        return (this.cartData = this.cartData.map((book) =>
           book.id === item.id
             ? { ...book, quantity: book.quantity! + 1, price: 50 }
             : book
-        );
+        ));
 
       return this.cartData.push({ ...item, quantity: 1, price: 50 });
     },
